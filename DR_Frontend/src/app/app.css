@@ -1,3 +1,16 @@
-.Title_Div {
+header {
     text-align: center;
+    font-size: 25px;
+}
+
+body {
+    background-color: blue;
+}
+
+canvas {
+    border: 3px solid #667eea;
+    border-radius: 10px;
+    cursor: crosshair;
+    background: #f8f9fa;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
