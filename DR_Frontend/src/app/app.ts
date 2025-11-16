@@ -71,8 +71,5 @@ export class App {
     console.log('🔮 Image data:', imageData.substring(0, 50) + '...');
     // Send to your API
   }
-  testMouseDown(event: MouseEvent) {
-    console.log('🎯 Canvas clicked at:', event.offsetX, event.offsetY);
-    alert('Canvas click works!');
-  }
+
 }
