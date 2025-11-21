@@ -9,11 +9,13 @@
 <canvas #canvas 
         width="280" 
         height="280"
-        (mousedown)="startDrawing($event, canvas)"
-        (mousemove)="draw($event, canvas)"
-        (mouseup)="stopDrawing()">
+        (mousedown)="StartDrawing($event, canvas)"
+        (mousemove)="Draw($event, canvas)"
+        (mouseup)="StopDrawing()">
 </canvas>
 
+<button (click) = "ClearCanvas(canvas)">Clear</button>
+<button (click) = "Predict(canvas)">Predict</button>
 
 </div>
 

@@ -1,8 +1,11 @@
+import { HttpClient } from '@angular/common/http';
 import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { Api } from './services/api';
 
 @Component({
   selector: 'app-root',
+  standalone: true,
   imports: [RouterOutlet],
   templateUrl: './app.html',
   host: { 'ngSkipHydration': 'true' },
@@ -11,65 +14,59 @@ import { RouterOutlet } from '@angular/router';
 export class App {
   protected title = 'DR_Frontend';
   image: File | null = null;
-
+  private preds: Object | null = null;
   private isDrawing = false;
   private ctx: CanvasRenderingContext2D | null = null;
 
-  startDrawing(event: MouseEvent, canvas: HTMLCanvasElement) {
-    console.log('🎯 Start drawing at:', event.offsetX, event.offsetY);
+  constructor(private api: Api) { }
 
+  StartDrawing(event: MouseEvent, canvas: HTMLCanvasElement) {
     this.ctx = canvas.getContext('2d');
-    if (!this.ctx) {
-      console.error('No canvas context available');
-      return;
-    }
 
-    // Set drawing style
+    if (!this.ctx) return;
+
     this.ctx.strokeStyle = '#000000';
-    this.ctx.lineWidth = 15;
-    this.ctx.lineCap = 'round';
     this.ctx.lineJoin = 'round';
+    this.ctx.lineCap = 'round';
+    this.ctx.lineWidth = 15;
 
     this.isDrawing = true;
 
-    // Start new path at mouse position
     this.ctx.beginPath();
     this.ctx.moveTo(event.offsetX, event.offsetY);
 
-    // Draw a dot at start position
     this.ctx.lineTo(event.offsetX, event.offsetY);
     this.ctx.stroke();
   }
 
-  draw(event: MouseEvent, canvas: HTMLCanvasElement) {
-    if (!this.isDrawing || !this.ctx) return;
+  Draw(event: MouseEvent, canvas: HTMLCanvasElement) {
+    if (!this.isDrawing || !this.ctx)
+      return;
 
-    // Continue drawing to current mouse position
     this.ctx.lineTo(event.offsetX, event.offsetY);
     this.ctx.stroke();
-
-    console.log('📝 Drawing to:', event.offsetX, event.offsetY);
   }
 
-  stopDrawing() {
+  StopDrawing() {
     this.isDrawing = false;
-    console.log('🛑 Stopped drawing');
   }
 
-  clearCanvas(canvas: HTMLCanvasElement) {
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
+  ClearCanvas(canvas: HTMLCanvasElement) {
+    this.ctx = canvas.getContext('2d');
 
-    // Clear with white background
-    ctx.fillStyle = 'white';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-    console.log('🧹 Canvas cleared');
+    if (!this.ctx) return;
+
+    this.ctx.fillStyle = 'white';
+    this.ctx.fillRect(0, 0, canvas.width, canvas.height);
   }
 
-  predictDigit(canvas: HTMLCanvasElement) {
-    const imageData = canvas.toDataURL('image/png');
-    console.log('🔮 Image data:', imageData.substring(0, 50) + '...');
-    // Send to your API
+  Predict(canvas: HTMLCanvasElement) {
+    console.log("Sending Image");
+    const imagedata = canvas.toDataURL('image/png');
+    this.api.PostImage(imagedata).subscribe(preds => {
+      this.preds = preds;
+    }
+    );
   }
 
 }
