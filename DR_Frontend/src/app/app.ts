@@ -1,7 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { Api } from './services/api';
 
 @Component({
   selector: 'app-root',
@@ -18,14 +17,14 @@ export class App {
   private isDrawing = false;
   private ctx: CanvasRenderingContext2D | null = null;
 
-  constructor(private api: Api) { }
+  constructor(private http: HttpClient) { }
 
   StartDrawing(event: MouseEvent, canvas: HTMLCanvasElement) {
     this.ctx = canvas.getContext('2d');
 
     if (!this.ctx) return;
 
-    this.ctx.strokeStyle = '#000000';
+    this.ctx.strokeStyle = '#FFFFFF';
     this.ctx.lineJoin = 'round';
     this.ctx.lineCap = 'round';
     this.ctx.lineWidth = 15;
@@ -56,17 +55,32 @@ export class App {
 
     if (!this.ctx) return;
 
-    this.ctx.fillStyle = 'white';
+    this.ctx.fillStyle = 'black';
     this.ctx.fillRect(0, 0, canvas.width, canvas.height);
   }
 
   Predict(canvas: HTMLCanvasElement) {
-    console.log("Sending Image");
-    const imagedata = canvas.toDataURL('image/png');
-    this.api.PostImage(imagedata).subscribe(preds => {
-      this.preds = preds;
-    }
-    );
-  }
+    // Convert canvas to blob
+    canvas.toBlob((blob) => {
+      if (!blob) return;
 
+      // Create FormData for file upload
+      const formData = new FormData();
+      formData.append('image', blob, 'image.png');
+
+      // Send POST request
+      this.http.post('http://localhost:8000/predict', formData)
+        .subscribe({
+          next: (response: any) => {
+            console.log('Prediction:', response);
+            // Handle success - update UI with prediction
+          },
+          error: (error) => {
+            console.error('Upload failed:', error);
+            // Handle error - show error message
+          }
+        });
+    }, 'image/png');
+
+  }
 }
