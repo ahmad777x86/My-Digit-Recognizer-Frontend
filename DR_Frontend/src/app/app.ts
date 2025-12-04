@@ -66,18 +66,16 @@ export class App {
 
       // Create FormData for file upload
       const formData = new FormData();
-      formData.append('image', blob, 'image.png');
+      formData.append('file', blob, 'image.png');
 
       // Send POST request
       this.http.post('http://localhost:8000/predict', formData)
         .subscribe({
           next: (response: any) => {
             console.log('Prediction:', response);
-            // Handle success - update UI with prediction
           },
           error: (error) => {
             console.error('Upload failed:', error);
-            // Handle error - show error message
           }
         });
     }, 'image/png');
