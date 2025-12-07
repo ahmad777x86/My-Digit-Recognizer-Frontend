@@ -1,11 +1,12 @@
 
 
-<div>
+<div class="Header">
   <h1>Digit Recognizer</h1>
   <p>AI-powered HandWritten Digits Recognition</p>
 </div>
 
-<div>
+<div class="demo-area">
+  <p>Draw a Digit (0-9) in the canvas below</p>
 <canvas #canvas 
         width="280" 
         height="280"
@@ -14,8 +15,12 @@
         (mouseup)="StopDrawing()">
 </canvas>
 
+<div>
 <button (click) = "ClearCanvas(canvas)">Clear</button>
 <button (click) = "Predict(canvas)">Predict</button>
+<p>Prediction: {{Response}}</p>
+<p>Confidence: {{Confidence}}%</p>
+</div>
 
 </div>
 

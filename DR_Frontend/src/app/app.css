@@ -1,6 +1,21 @@
-header {
+.Header {
     text-align: center;
     font-size: 25px;
+}
+
+.demo-area {
+    text-align: center;
+    font-size: 25px;
+    background-color: #7c90eb;
+    padding: 100px 50px;
+    margin: 70px 200px;
+}
+
+button {
+    padding: 8px 16px;
+    margin-left: 30px;
+    border-radius: 20px;
+    font-size: 20px;
 }
 
 body {

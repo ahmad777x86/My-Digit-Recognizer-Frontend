@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, NgZone, ViewChild } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 
 @Component({
@@ -11,13 +11,15 @@ import { RouterOutlet } from '@angular/router';
   styleUrl: './app.css'
 })
 export class App {
+  Response: string | null = null;
+  Confidence: string | null = null;
   protected title = 'DR_Frontend';
   image: File | null = null;
   private preds: Object | null = null;
   private isDrawing = false;
   private ctx: CanvasRenderingContext2D | null = null;
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private ngZone: NgZone) { }
 
   StartDrawing(event: MouseEvent, canvas: HTMLCanvasElement) {
     this.ctx = canvas.getContext('2d');
@@ -72,7 +74,13 @@ export class App {
       this.http.post('http://localhost:8000/predict', formData)
         .subscribe({
           next: (response: any) => {
-            console.log('Prediction:', response);
+            this.ngZone.run(() => {
+              this.Response = JSON.stringify(response).substring(15, 16)
+              this.Confidence = JSON.stringify(response).substring(32, 34)
+            });
+            console.log('Response: ', response);
+            console.log('Prediction:', this.Response);
+            console.log('Confidence:', this.Confidence, "%");
           },
           error: (error) => {
             console.error('Upload failed:', error);
